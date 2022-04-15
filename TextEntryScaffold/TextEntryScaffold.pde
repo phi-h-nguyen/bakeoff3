@@ -28,9 +28,11 @@ String[] row2 = {"W", "R", "Y", "I", "P"};
 String[] row3 = {"A", "D", "G", "J", "L"};
 String[] row4 = {"S", "F", "H", "K", "M"};
 String[] row5 = {"Z", "C", "V", "B", "N"};
-String[] row6 = {"X", "_", "_", "_", "<-"};
+String[] row6 = {"X", "_", "_", "<-", "<-"};
 
 String[][] rows = {row1, row2, row3, row4, row5, row6};
+
+float holdDownTimer = 0;
 
 //Variables for my silly implementation. You can delete this:
 char currentLetter = 'a';
@@ -69,9 +71,9 @@ void draw()
     text("Total errors entered: " + errorsTotal,400,280); //output
     float wpm = (lettersEnteredTotal / 5.0f) / ((finishTime - startTime) / 60000f); //FYI - 60K is number of milliseconds in minute
     text("Raw WPM: " + wpm,400,300); //output
-    float freebieErrors = lettersExpectedTotal *.05; //no penalty if errors are under 5% of chars
+    float freebieErrors = lettersExpectedTotal * .05; //no penalty if errors are under 5% of chars
     text("Freebie errors: " + nf(freebieErrors,1,3),400,320); //output
-    float penalty = max(errorsTotal - freebieErrors, 0) * .5f;
+    float penalty = max(errorsTotal - freebieErrors, 0) *.5f;
     text("Penalty: " + penalty,400,340);
     text("WPM w/ penalty: " + (wpm - penalty),400,360); //yes, minus, because higher WPM is better
     return;
@@ -100,14 +102,14 @@ void draw()
     textAlign(LEFT); //align the text left
     fill(128);
     text("Phrase " + (currTrialNum + 1) + " of " + totalTrialNum, 70, 50); //draw the trial count
-    text("Target:   " + currentPhrase, 70, 100); //draw the target string
-    text("Entered:  " + currentTyped + "|", 70, 140); //draw what the user has entered thus far 
+    text("Target:   " + currentPhrase, 100, 180); //draw the target string
+    text("Entered:  " + currentTyped + "|", 93, 210); //draw what the user has entered thus far 
     
     //draw very basic next button
     fill(255, 0, 0);
-    rect(600, 300, 200, 200); //draw next button
+    rect(600, 0, 200, 200); //draw next button
     fill(255);
-    text("NEXT > ", 650, 350); //draw next label
+    text("NEXT > ", 650, 100); //draw next label
     
     float buttonWidth = sizeOfInputArea / 5;
     float buttonHeight = sizeOfInputArea / 7;
@@ -126,6 +128,19 @@ void draw()
         } else {
           fill(255);
         }
+        if (currentLetter == '<' && millis() - holdDownTimer > 400 && holdDownTimer != 0) {
+          String[] split = split(currentTyped, " ");
+          split = subset(split, 0, split.length - 1);
+
+          if (split.length < 1) {
+            currentTyped = join(split, " ") + " ";
+          } else {
+            currentTyped = join(split, " ") + "  ";
+          }
+
+          holdDownTimer = 0;
+        }
+
         rect(left, top, buttonWidth, buttonHeight);
         fill(0);
         text(rows[i][j], left + buttonWidth / 2, top + buttonHeight / 2);
@@ -160,6 +175,7 @@ void mouseDragged() {
   }
 }
 
+
 void mousePressed() {
   float buttonWidth = sizeOfInputArea / 5;
   float buttonHeight = sizeOfInputArea / 7;
@@ -172,6 +188,9 @@ void mousePressed() {
       float top = watchTop + (i + 1) * buttonHeight;
       if (mouseInBounds(left, top, buttonWidth, buttonHeight)) {
         currentLetter = rows[i][j].charAt(0);
+        if (currentLetter == '<') {
+          holdDownTimer = millis();
+        } 
       }
     }
   }
@@ -202,10 +221,11 @@ void mouseReleased() {
   
   currentLetter = ' ';
   //You are allowed to have a next button outside the 1" area
-  if (mouseInBounds(600, 300, 200, 200)) //check if click is in next button
+  if (mouseInBounds(600, 0, 200, 200)) //check if click is in next button
   {
     nextTrial(); //if so, advance to next trial
   }
+  holdDownTimer = 0;
 }
 
 
@@ -243,8 +263,8 @@ void nextTrial()
     System.out.println("Total errors entered: " + errorsTotal); //output
     
     float wpm = (lettersEnteredTotal / 5.0f) / ((finishTime - startTime) / 60000f); //FYI - 60K is number of milliseconds in minute
-    float freebieErrors = lettersExpectedTotal *.05; //no penalty if errors are under 5% of chars
-    float penalty = max(errorsTotal - freebieErrors, 0) * .5f;
+    float freebieErrors = lettersExpectedTotal * .05; //no penalty if errors are under 5% of chars
+    float penalty = max(errorsTotal - freebieErrors, 0) *.5f;
     
     System.out.println("Raw WPM: " + wpm); //output
     System.out.println("Freebie errors: " + freebieErrors); //output
@@ -317,3 +337,5 @@ int computeLevenshteinDistance(String phrase1, String phrase2) //this computers 
   
   return distance[phrase1.length()][phrase2.length()];
 }
+
+
