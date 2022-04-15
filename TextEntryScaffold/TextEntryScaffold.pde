@@ -23,12 +23,12 @@ final float watchMidX = 400;
 final float watchLeft = watchMidX - sizeOfInputArea / 2;
 final float watchTop = watchMidY - sizeOfInputArea / 2;
 
-String[] row1 = {"Q", "E", "T", "U", "O"};
-String[] row2 = {"W", "R", "Y", "I", "P"};
-String[] row3 = {"A", "D", "G", "J", "L"};
-String[] row4 = {"S", "F", "H", "K", "M"};
-String[] row5 = {"Z", "C", "V", "B", "N"};
-String[] row6 = {"X", "_", "_", "_", "<-"};
+String[] row1 = {"A", "B", "C", "D", "E"};
+String[] row2 = {"F", "G", "H", "I", "J"};
+String[] row3 = {"K", "L", "M", "N", "O"};
+String[] row4 = {"P", "Q", "R", "S", "T"};
+String[] row5 = {"U", "V", "W", "X", "Y"};
+String[] row6 = {"Z", "_", "_", "_", "<-"};
 
 String[][] rows = {row1, row2, row3, row4, row5, row6};
 
