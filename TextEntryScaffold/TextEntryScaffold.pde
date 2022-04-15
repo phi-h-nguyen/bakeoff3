@@ -23,12 +23,21 @@ final float watchMidX = 400;
 final float watchLeft = watchMidX - sizeOfInputArea / 2;
 final float watchTop = watchMidY - sizeOfInputArea / 2;
 
+/*
 String[] row1 = {"Q", "E", "T", "U", "O"};
 String[] row2 = {"W", "R", "Y", "I", "P"};
 String[] row3 = {"A", "D", "G", "J", "L"};
 String[] row4 = {"S", "F", "H", "K", "M"};
 String[] row5 = {"Z", "C", "V", "B", "N"};
 String[] row6 = {"X", "_", "_", "<-", "<-"};
+*/
+
+String[] row1 = {"Q", "E", "T", "<-", "<-" };
+String[] row2 = {"W", "R", "Y", "U", "O",};
+String[] row3 = {"A", "D", "J", "I", "P"};
+String[] row4 = {"S", "G", "H", "K", "L"};
+String[] row5 = {"C", "F", "V", "B", "N"};
+String[] row6 = {"Z", "X", "_", "_", "M"};
 
 String[][] rows = {row1, row2, row3, row4, row5, row6};
 
@@ -71,9 +80,9 @@ void draw()
     text("Total errors entered: " + errorsTotal,400,280); //output
     float wpm = (lettersEnteredTotal / 5.0f) / ((finishTime - startTime) / 60000f); //FYI - 60K is number of milliseconds in minute
     text("Raw WPM: " + wpm,400,300); //output
-    float freebieErrors = lettersExpectedTotal * .05; //no penalty if errors are under 5% of chars
+    float freebieErrors = lettersExpectedTotal *.05; //no penalty if errors are under 5% of chars
     text("Freebie errors: " + nf(freebieErrors,1,3),400,320); //output
-    float penalty = max(errorsTotal - freebieErrors, 0) *.5f;
+    float penalty = max(errorsTotal - freebieErrors, 0) * .5f;
     text("Penalty: " + penalty,400,340);
     text("WPM w/ penalty: " + (wpm - penalty),400,360); //yes, minus, because higher WPM is better
     return;
@@ -131,16 +140,16 @@ void draw()
         if (currentLetter == '<' && millis() - holdDownTimer > 400 && holdDownTimer != 0) {
           String[] split = split(currentTyped, " ");
           split = subset(split, 0, split.length - 1);
-
+          
           if (split.length < 1) {
             currentTyped = join(split, " ") + " ";
           } else {
             currentTyped = join(split, " ") + "  ";
           }
-
+          
           holdDownTimer = 0;
         }
-
+        
         rect(left, top, buttonWidth, buttonHeight);
         fill(0);
         text(rows[i][j], left + buttonWidth / 2, top + buttonHeight / 2);
@@ -263,8 +272,8 @@ void nextTrial()
     System.out.println("Total errors entered: " + errorsTotal); //output
     
     float wpm = (lettersEnteredTotal / 5.0f) / ((finishTime - startTime) / 60000f); //FYI - 60K is number of milliseconds in minute
-    float freebieErrors = lettersExpectedTotal * .05; //no penalty if errors are under 5% of chars
-    float penalty = max(errorsTotal - freebieErrors, 0) *.5f;
+    float freebieErrors = lettersExpectedTotal *.05; //no penalty if errors are under 5% of chars
+    float penalty = max(errorsTotal - freebieErrors, 0) * .5f;
     
     System.out.println("Raw WPM: " + wpm); //output
     System.out.println("Freebie errors: " + freebieErrors); //output
