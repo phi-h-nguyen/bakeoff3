@@ -19,7 +19,7 @@ PImage watch;
 PImage finger;
 
 final float watchMidY = 360;
-final float watchMidX = 400;
+final float watchMidX = 450;
 final float watchLeft = watchMidX - sizeOfInputArea / 2;
 final float watchTop = watchMidY - sizeOfInputArea / 2;
 
@@ -133,7 +133,7 @@ void draw()
     } else {
       fill(255);
     }
-    rect(watchLeft, watchTop + 6 * buttonHeight, sizeOfInputArea, buttonHeight);
+    rect(watchLeft, watchTop + 6 * buttonHeight + 3, sizeOfInputArea, buttonHeight - 3);
     
     for (int i = 0; i < rows.length; i++) {
       int len = rows[i].length;
@@ -158,9 +158,9 @@ void draw()
           holdDownTimer = 0;
         }
         if (rows[i][j] == "<-") {
-          rect(left, top, buttonWidth * 2, buttonHeight * 2);
+          rect(left + 3, top, buttonWidth * 2 - 3, buttonHeight * 2 - 3);
           fill(0);
-          text(rows[i][j], left + buttonWidth, top + buttonHeight);
+          text("←", left + buttonWidth + 3, top + buttonHeight - 3);
         } else {
           rect(left, top, buttonWidth, buttonHeight);
           fill(0);
@@ -169,7 +169,6 @@ void draw()
       }
     }
   }
-  
   
   //drawFinger(); //no longer needed as we'll be deploying to an actual touschreen device
 }
@@ -181,24 +180,43 @@ boolean mouseInBounds(float x, float y, float w, float h) //simple function to d
 }
 
 void mouseDragged() {
-  
-  for (int i = 0; i < rows.length; i++) {
-    int len = rows[i].length;
-    
-    for (int j = 0; j < len; j++) {
-      float left = watchLeft + j * buttonWidth;
-      float top = watchTop + i * buttonHeight;
-      if (mouseInBounds(left, top, buttonWidth, buttonHeight)) {
-        currentLetter = rows[i][j].charAt(0);
+  boolean found = false;
+  if (mouseInBounds(watchLeft, watchTop + 6 * buttonHeight + 3, sizeOfInputArea, buttonHeight - 3)) {
+    currentLetter = '_';
+    found = true;
+  } else {
+    for (int i = 0; i < rows.length; i++) {
+      int len = rows[i].length;
+      
+      for (int j = 0; j < len; j++) {
+        float left = watchLeft + j * buttonWidth;
+        float top = watchTop + i * buttonHeight;
+        if (rows[i][j] == "<-") {
+          if (mouseInBounds(left + 3, top, buttonWidth * 2 - 3, buttonHeight * 2 - 3)) {
+            currentLetter = '<';
+            found = true;
+          }
+        }
+        else {
+          if (mouseInBounds(left, top, buttonWidth, buttonHeight)) {
+            currentLetter = rows[i][j].charAt(0);
+            found = true;
+          }
+        }
       }
     }
+  }
+  if (!found) {
+    currentLetter = ' ';
   }
 }
 
 
 void mousePressed() {
-  if (mouseInBounds(watchLeft, watchTop + 6 * buttonHeight, sizeOfInputArea, buttonHeight)) {
+  boolean found = false;
+  if (mouseInBounds(watchLeft, watchTop + 6 * buttonHeight + 3, sizeOfInputArea, buttonHeight - 3)) {
     currentLetter = '_';
+    found = true;
   } else {
     for (int i = 0; i < rows.length; i++) {
       int len = rows[i].length;
@@ -206,24 +224,28 @@ void mousePressed() {
         float left = watchLeft + j * buttonWidth;
         float top = watchTop + i * buttonHeight;
         if (rows[i][j] == "<-") {
-          if (mouseInBounds(left, top, buttonWidth * 2, buttonHeight * 2)) {
+          if (mouseInBounds(left + 3, top, buttonWidth * 2 - 3, buttonHeight * 2 - 3)) {
             holdDownTimer = millis();
             currentLetter = '<';
+            found = true;
           }
         }
         else {
           if (mouseInBounds(left, top, buttonWidth, buttonHeight)) {
             currentLetter = rows[i][j].charAt(0);
+            found = true;
           }
         }
-        
       }
     }
+  }
+  if (!found) {
+    currentLetter = ' ';
   }
 }
 
 void mouseReleased() {
-  if (mouseInBounds(watchLeft, watchTop + 6 * buttonHeight, sizeOfInputArea, buttonHeight)) {
+  if (mouseInBounds(watchLeft, watchTop + 6 * buttonHeight + 3, sizeOfInputArea, buttonHeight - 3)) {
     currentTyped += " ";
   } else {
     for (int i = 0; i < rows.length; i++) {
@@ -234,7 +256,7 @@ void mouseReleased() {
         String letter = rows[i][j];
         
         if (rows[i][j] == "<-") {
-          if (mouseInBounds(left, top, buttonWidth * 2, buttonHeight * 2)) {
+          if (mouseInBounds(left + 3, top, buttonWidth * 2 - 3, buttonHeight * 2 - 3)) {
             if (currentTyped.length() > 0) {
               currentTyped = currentTyped.substring(0, currentTyped.length() - 1);
             }
